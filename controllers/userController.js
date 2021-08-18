@@ -21,10 +21,9 @@ exports.registrationUser = async (req, res) => {
     if (user !== null) {
       return res.json({ message: "User already exist" });
     }
-    User.create({ fullName, email, password, dob })
-      .then(() => {
-        res.json({ message: "Registration success" });
-      })
+    User.create({ fullName, email, password, dob }).then(() => {
+      res.json({ message: "Registration success" });
+    });
   } catch (error) {
     res.json(error);
   }
@@ -39,7 +38,7 @@ exports.getUsers = (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  res.send(req.user);
+  res.json(req.user);
 };
 
 exports.loginUser = async (req, res) => {
@@ -78,7 +77,6 @@ exports.deleteUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    if (!req.body) return res.sendStatus(400).json();
     const user = req.user;
     if (user) {
       if (req.body.fullName) user.fullName = req.body.fullName;
