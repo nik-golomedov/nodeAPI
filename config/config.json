@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "fusion_intern",
+    "password": "fusion",
+    "database": "usersdb",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "fusion_intern",
+    "password": "fusion",
+    "database": "usersdb",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "fusion_intern",
+    "password": "fusion",
+    "database": "usersdb",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
