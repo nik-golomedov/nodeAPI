@@ -1,10 +1,7 @@
 const User = require("../models/user");
 const CryptoJS = require("crypto-js");
-const tokenUsage = require("../jwt");
+const tokenUsage = require("../middleware/isAuth");
 const dotenv = require("dotenv");
-const validator = require("validator");
-const correctName = /^\w+\s\w+$/i;
-const validation = require("../validation");
 
 dotenv.config();
 
@@ -37,7 +34,7 @@ exports.getUsers = (req, res) => {
   }).then((data) => res.json(data));
 };
 
-exports.getUser = async (req, res) => {
+exports.getUser = (req, res) => {
   res.json(req.user);
 };
 
@@ -65,11 +62,8 @@ exports.loginUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    if (req.user) {
       await req.user.destroy();
       res.json({ message: "Delete success" });
-    }
-    return res.status(401).json({ message: "user does not exist" });
   } catch (error) {
     res.json(error);
   }
@@ -79,14 +73,13 @@ exports.updateUser = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
-      if (req.body.fullName) user.fullName = req.body.fullName;
-      if (req.body.email) user.email = req.body.email;
-      if (req.body.dob) user.dob = req.body.dob;
-      if (req.body.password)
-        user.password = CryptoJS.AES.encrypt(
-          req.body.password,
-          process.env.SECRET_KEY
-        ).toString();
+      user.fullName = req.body.fullName;
+      user.email = req.body.email;
+      user.dob = req.body.dob;
+      user.password = CryptoJS.AES.encrypt(
+        req.body.password,
+        process.env.SECRET_KEY
+      ).toString();
 
       try {
         await user.update({
@@ -100,7 +93,6 @@ exports.updateUser = async (req, res) => {
         res.json(error.message);
       }
     }
-    return res.json({ message: "User does not exist" });
   } catch (error) {
     res.json(error);
   }

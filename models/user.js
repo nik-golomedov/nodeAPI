@@ -1,12 +1,11 @@
-
 const Sequelize = require("sequelize");
-const sequelize = require("../sequelize");
+const db = require("./");
 
-const User = sequelize.define("Users", {
+const User = db.sequelize.define("Users", {
   fullName: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: { is:/^\w+\s\w+$/i  },
+    validate: { is: /^\w+\s\w+$/i },
   },
   email: {
     type: Sequelize.STRING,

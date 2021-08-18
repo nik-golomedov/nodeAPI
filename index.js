@@ -1,13 +1,11 @@
 const express = require("express");
-const sequelize = require("./sequelize");
-const userRouter = require("./routes/userRouter");
+const userRouter = require("./routes/user");
 const PORT = 8000;
 const app = express();
 
 app.use(express.json());
 
 try {
-  sequelize.authenticate();
   console.log("Connection has been established successfully.");
   app.listen(PORT, () => {
     console.log(`Server started on PORT:${PORT}`);
