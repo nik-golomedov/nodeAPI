@@ -1,7 +1,7 @@
 const CryptoJS = require("crypto-js");
 const dotenv = require("dotenv");
 
-const db = require("../models")
+const db = require("../models");
 const tokenUsage = require("../middleware/isAuth");
 
 dotenv.config();
@@ -15,11 +15,11 @@ registerUser = async (req, res) => {
       req.body.password,
       process.env.SECRET_KEY
     ).toString();
-    const user = await db.Users.findOne({ where: { email } });
+    const user = await db.user.findOne({ where: { email } });
     if (user !== null) {
       return res.json({ message: "User already exist" });
     }
-    db.Users.create({ fullName, email, password, dob }).then(() => {
+    db.user.create({ fullName, email, password, dob }).then(() => {
       res.json({ message: "Registration success" });
     });
   } catch (error) {
@@ -28,11 +28,14 @@ registerUser = async (req, res) => {
 };
 
 getUsers = (req, res) => {
-  db.Users.findAll({
-    attributes: {
-      exclude: ["createdAt", "updatedAt"],
-    },
-  }).then((data) => res.json(data)).catch(error=>res.json({messagee:error}));
+  db.user
+    .findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    })
+    .then((data) => res.json(data))
+    .catch((error) => res.json({ message: error }));
 };
 
 getProfile = (req, res) => {
@@ -47,7 +50,7 @@ loginUser = async (req, res) => {
     if (!req.body) return res.status(400).json();
     const email = req.body.email;
     const password = req.body.password;
-    const user = await db.Users.findOne({ where: { email } });
+    const user = await db.user.findOne({ where: { email } });
     if (!user) {
       return res.json({ message: "Enter correct email and/or password" });
     }
@@ -66,7 +69,7 @@ loginUser = async (req, res) => {
 
 deleteUser = async (req, res) => {
   try {
-    const user = await db.Users.destroy({ where: { id: req.user.id } });
+    const user = await db.user.destroy({ where: { id: req.user.id } });
     res.json({ message: `Delete success` });
   } catch (error) {
     res.json(error);
