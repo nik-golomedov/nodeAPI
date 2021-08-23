@@ -5,7 +5,7 @@ const db = require("../models");
 
 dotenv.config();
 
-const generateAccessToken = (name, res) => {
+const generateAccessToken = (name) => {
   const token = jwt.sign(name, process.env.TOKEN_SECRET, {
     algorithm: "HS256",
   });

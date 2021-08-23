@@ -6,7 +6,7 @@ const tokenUsage = require("../middleware/isAuth");
 
 dotenv.config();
 
-registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const fullName = req.body.fullName;
     const email = req.body.email;
@@ -19,33 +19,34 @@ registerUser = async (req, res) => {
     if (user !== null) {
       return res.json({ message: "User already exist" });
     }
-    db.user.create({ fullName, email, password, dob }).then(() => {
-      res.json({ message: "Registration success" });
-    });
+    const newUser = db.user.create({ fullName, email, password, dob });
+    res.json({ message: "Registration success" });
   } catch (error) {
     res.json(error);
   }
 };
 
-getUsers = (req, res) => {
-  db.user
-    .findAll({
+const getUsers = async (req, res) => {
+  try {
+    const users = await db.user.findAll({
       attributes: {
         exclude: ["createdAt", "updatedAt"],
       },
-    })
-    .then((data) => res.json(data))
-    .catch((error) => res.json({ message: error }));
+    });
+    res.json(users);
+  } catch (err) {
+    res.status(401).json({ err });
+  }
 };
 
-getProfile = (req, res) => {
+const getProfile = (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "User not found" });
   }
   res.json(req.user);
 };
 
-loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     if (!req.body) return res.status(400).json();
     const email = req.body.email;
@@ -67,7 +68,7 @@ loginUser = async (req, res) => {
   }
 };
 
-deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const user = await db.user.destroy({ where: { id: req.user.id } });
     res.json({ message: `Delete success` });
@@ -76,7 +77,7 @@ deleteUser = async (req, res) => {
   }
 };
 
-updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
@@ -87,18 +88,13 @@ updateUser = async (req, res) => {
         req.body.password,
         process.env.SECRET_KEY
       ).toString();
-
-      try {
-        await user.update({
-          fullName: user.fullName,
-          email: user.email,
-          password: user.password,
-          dob: user.dob,
-        });
-        res.json({ message: "Success updated" });
-      } catch (error) {
-        res.json(error.message);
-      }
+      await user.update({
+        fullName: user.fullName,
+        email: user.email,
+        password: user.password,
+        dob: user.dob,
+      });
+      res.json({ message: "Success updated" });
     }
   } catch (error) {
     res.json(error);

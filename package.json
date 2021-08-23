@@ -18,6 +18,7 @@
     "validate": "^5.1.0"
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
     "sequelize-cli": "^6.2.0"
   },
   "scripts": {
