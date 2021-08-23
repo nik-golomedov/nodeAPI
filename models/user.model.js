@@ -1,0 +1,39 @@
+const { Model } = require("sequelize");
+
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {}
+  User.init(
+    {
+      fullName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { is: /^\w+\s\w+$/i },
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: { args: true, msg: "Valid email required" },
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: { args: [6, 256], msg: "String length is not in this range" },
+        },
+      },
+      dob: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Users"
+    }
+  );
+
+  return User;
+};

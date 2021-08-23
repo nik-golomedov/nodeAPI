@@ -1,17 +1,16 @@
-const userController = require("../controllers/userController");
 const express = require("express");
-const userRouter = express.Router();
+
+const userController = require("../controllers/userController");
 const useToken = require("../middleware/isAuth");
 const { checkUsers } = require("../validation/user");
+
+const userRouter = express.Router();
+
 userRouter.get("/", useToken.authenticateToken, userController.getUsers);
-userRouter.get("/:id", useToken.authenticateToken, userController.getUser);
-userRouter.post("/registration", checkUsers, userController.registrationUser);
+userRouter.get("/:id", useToken.authenticateToken, userController.getProfile);
+userRouter.post("/registration", checkUsers, userController.registerUser);
 userRouter.post("/login", userController.loginUser);
-userRouter.delete(
-  "/",
-  useToken.authenticateToken,
-  userController.deleteUser
-);
+userRouter.delete("/", useToken.authenticateToken, userController.deleteUser);
 userRouter.put(
   "/",
   useToken.authenticateToken,

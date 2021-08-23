@@ -1,11 +1,12 @@
-const User = require("../models/user");
 const CryptoJS = require("crypto-js");
-const tokenUsage = require("../middleware/isAuth");
 const dotenv = require("dotenv");
+
+const db = require("../models")
+const tokenUsage = require("../middleware/isAuth");
 
 dotenv.config();
 
-exports.registrationUser = async (req, res) => {
+registerUser = async (req, res) => {
   try {
     const fullName = req.body.fullName;
     const email = req.body.email;
@@ -14,11 +15,11 @@ exports.registrationUser = async (req, res) => {
       req.body.password,
       process.env.SECRET_KEY
     ).toString();
-    const user = await User.findOne({ where: { email } });
+    const user = await db.Users.findOne({ where: { email } });
     if (user !== null) {
       return res.json({ message: "User already exist" });
     }
-    User.create({ fullName, email, password, dob }).then(() => {
+    db.Users.create({ fullName, email, password, dob }).then(() => {
       res.json({ message: "Registration success" });
     });
   } catch (error) {
@@ -26,24 +27,27 @@ exports.registrationUser = async (req, res) => {
   }
 };
 
-exports.getUsers = (req, res) => {
-  User.findAll({
+getUsers = (req, res) => {
+  db.Users.findAll({
     attributes: {
-      exclude: ["id", "createdAt", "updatedAt"],
+      exclude: ["createdAt", "updatedAt"],
     },
-  }).then((data) => res.json(data));
+  }).then((data) => res.json(data)).catch(error=>res.json({messagee:error}));
 };
 
-exports.getUser = (req, res) => {
+getProfile = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "User not found" });
+  }
   res.json(req.user);
 };
 
-exports.loginUser = async (req, res) => {
+loginUser = async (req, res) => {
   try {
     if (!req.body) return res.status(400).json();
     const email = req.body.email;
     const password = req.body.password;
-    const user = await User.findOne({ where: { email } });
+    const user = await db.Users.findOne({ where: { email } });
     if (!user) {
       return res.json({ message: "Enter correct email and/or password" });
     }
@@ -60,16 +64,16 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-exports.deleteUser = async (req, res) => {
+deleteUser = async (req, res) => {
   try {
-      await req.user.destroy();
-      res.json({ message: "Delete success" });
+    const user = await db.Users.destroy({ where: { id: req.user.id } });
+    res.json({ message: `Delete success` });
   } catch (error) {
     res.json(error);
   }
 };
 
-exports.updateUser = async (req, res) => {
+updateUser = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
@@ -96,4 +100,13 @@ exports.updateUser = async (req, res) => {
   } catch (error) {
     res.json(error);
   }
+};
+
+module.exports = {
+  registerUser,
+  getUsers,
+  getProfile,
+  loginUser,
+  deleteUser,
+  updateUser,
 };

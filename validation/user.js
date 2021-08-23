@@ -1,5 +1,6 @@
+const { check, validationResult } = require("express-validator");
+
 const correctName = /^\w+\s\w+$/i;
-const { check, validationResult } = require("express-validator/check");
 
 exports.checkUsers = [
   check("fullName")
