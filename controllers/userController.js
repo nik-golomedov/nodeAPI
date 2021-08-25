@@ -26,18 +26,18 @@ const registerUser = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
-  try {
-    const users = await db.user.findAll({
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
-    res.json(users);
-  } catch (err) {
-    res.status(401).json({ err });
-  }
-};
+// const getUsers = async (req, res) => {
+//   try {
+//     const users = await db.user.findAll({
+//       attributes: {
+//         exclude: ["createdAt", "updatedAt"],
+//       },
+//     });
+//     res.json(users);
+//   } catch (err) {
+//     res.status(401).json({ err });
+//   }
+// };
 
 const getProfile = (req, res) => {
   if (!req.user) {
@@ -103,7 +103,6 @@ const updateUser = async (req, res) => {
 
 module.exports = {
   registerUser,
-  getUsers,
   getProfile,
   loginUser,
   deleteUser,

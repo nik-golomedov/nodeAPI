@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
     const currUser = await db.user.findOne({
       where: { id: user },
       attributes: {
-        exclude: ["createdAt", "updatedAt"],
+        exclude: ["password","createdAt", "updatedAt"],
       },
     });
     if (!currUser) {
