@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "bookId",
       });
       Book.hasMany(models.rating);
+      Book.belongsTo(models.category);
     }
   }
   Book.init(
@@ -33,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       snippet: {
         type: DataTypes.TEXT,
         allowNull: true,
@@ -40,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      creator: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
     },
     {

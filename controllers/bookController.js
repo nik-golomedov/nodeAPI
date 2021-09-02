@@ -1,10 +1,6 @@
-const { Op } = require("sequelize");
-
-const { sequelize } = require("../models");
 const db = require("../models");
 
 const addBook = async (req, res) => {
-  console.log(req.body);
   try {
     const title = req.body.title;
     const description = req.body.description;
@@ -12,8 +8,9 @@ const addBook = async (req, res) => {
     const author = req.body.author;
     const snippet = req.body.snippet;
     const image = "http://localhost:8000/" + req.body.header;
+    const creator = +req.body.creator;
+    const categoryId = req.body.category;
     const book = await db.book.findOne({ where: { title } });
-
     if (book !== null) {
       return res.json({ message: "Book already exist" });
     }
@@ -24,6 +21,8 @@ const addBook = async (req, res) => {
       author,
       snippet,
       image,
+      creator,
+      categoryId,
     });
     res.json({ message: "Book successfull added" });
   } catch (error) {
@@ -33,9 +32,11 @@ const addBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
   try {
+    const Category = db.category;
     const books = await db.book.findAll({
+      include: { model: Category, attributes: ["value"] },
       attributes: {
-        exclude: ["createdAt", "updatedAt"],
+        exclude: ["createdAt", "updatedAt", "userId"],
       },
     });
     res.json(books);
@@ -60,7 +61,6 @@ const getReview = async (req, res) => {
   try {
     const bookId = +req.params.id;
     const User = db.user;
-    console.log(req.params);
     const review = await db.review.findAll({
       where: { bookId },
       include: { model: User, attributes: { exclude: ["password"] } },
@@ -97,7 +97,6 @@ const getFavourites = async (req, res) => {
       where: { id: userId },
       include: Book,
     });
-    console.log(result);
     res.json(result);
   } catch (error) {
     res.json(error);
@@ -127,7 +126,6 @@ const addRating = async (req, res) => {
     const amountRating = await db.rating.count({
       where: { bookId },
     });
-    console.log(sumRating);
     const avgRating = sumRating / amountRating;
     const ratingBook = await db.book.update(
       { rating: avgRating },
@@ -147,6 +145,49 @@ const getRating = async (req, res) => {
   }
 };
 
+const addCategory = async (req, res) => {
+  try {
+    const value = req.body.category;
+    const existCategory = await db.category.findOne({
+      where: { value },
+    });
+    if (existCategory) {
+      return res.json({ message: "Category already exist" });
+    }
+    const addCategory = await db.category.create({ value });
+    res.json(addCategory);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const getCategory = async (req, res) => {
+  try {
+    const userCategories = await db.category.findAll({
+      attributes: ["value", "id"],
+    });
+    res.json(userCategories);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const editBook = async (req, res) => {
+  try {
+    const userId = +req.body.userId;
+    const bookId = +req.body.bookId;
+    const snippet = req.body.snippet;
+    const price = req.body.price;
+    const description = req.body.description;
+    const editedBook = await db.book.findOne({
+      where: { id:bookId, creator: userId },
+    });
+    return await editedBook.update({ snippet, price, description });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
 module.exports = {
   addBook,
   getBooks,
@@ -156,4 +197,7 @@ module.exports = {
   getFavourites,
   addRating,
   getRating,
+  addCategory,
+  getCategory,
+  editBook
 };

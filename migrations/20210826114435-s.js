@@ -29,6 +29,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      categoryId: {
+        type: Sequelize.INTEGER,
+        allowNull:false,
+      },
       snippet: {
         type: Sequelize.TEXT,
         allowNull: true,
@@ -36,6 +40,15 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
         allowNull: true,
+      },
+      creator: {
+        type: Sequelize.INTEGER,
+        aloowNull:false,
+        references: {
+          model: "user",
+          key: "id",
+          as: "User",
+        },
       },
       createdAt: {
         allowNull: false,

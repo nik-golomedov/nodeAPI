@@ -13,5 +13,8 @@ bookRouter.post("/addfavourites", useToken.authenticateToken, bookController.add
 bookRouter.get("/getfavourites/:id", useToken.authenticateToken, bookController.getFavourites);
 bookRouter.post("/addrating", useToken.authenticateToken, bookController.addRating);
 bookRouter.get("/getrating/:id", useToken.authenticateToken, bookController.getRating);
+bookRouter.post("/addcategory", useToken.authenticateToken, bookController.addCategory);
+bookRouter.get("/getcategory", useToken.authenticateToken, bookController.getCategory);
+bookRouter.patch("/editbook", useToken.authenticateToken, bookController.editBook);
 
 module.exports = bookRouter;
