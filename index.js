@@ -1,12 +1,14 @@
 const express = require("express");
 const multer = require("multer");
 const randomstring = require("randomstring");
+const cors = require("cors");
+
 const userRouter = require("./routes/user");
+const bookRouter = require("./routes/book");
 
 const PORT = 8000;
 const app = express();
-const cors = require("cors");
-const bookRouter = require("./routes/book");
+
 let addedString = randomstring.generate();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

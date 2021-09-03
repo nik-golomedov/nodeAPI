@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+const { sequelize } = require("../models");
 const db = require("../models");
 
 const addBook = async (req, res) => {
@@ -14,7 +16,7 @@ const addBook = async (req, res) => {
     if (book !== null) {
       return res.json({ message: "Book already exist" });
     }
-    const newBook = db.book.create({
+    const newBook = await db.book.create({
       title,
       description,
       price,
@@ -32,16 +34,56 @@ const addBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
   try {
-    const Category = db.category;
-    const books = await db.book.findAll({
-      include: { model: Category, attributes: ["value"] },
+    const queryParams = {};
+    const orderParams = {};
+    let page = 0;
+    if (req.query.author) {
+      queryParams.author = { [Op.substring]: req.query.author };
+    }
+    if (req.query.order) {
+      const order = req.query.order.split("_");
+      orderParams.order = order[0];
+      orderParams.orderDirection = order[1];
+    }
+    if (req.query.rating) queryParams.rating ={ [Op.gte]: req.query.rating};
+    if (req.query.price) {
+      queryParams.price = { [Op.between]: req.query.price };
+    }
+    if (req.query.category) queryParams.categoryId = +req.query.category;
+    if (req.query.page) page = req.query.page;
+    const books = await db.book.findAndCountAll({
+      include: [{ model: db.category, attributes: ["value"] }],
       attributes: {
         exclude: ["createdAt", "updatedAt", "userId"],
       },
+      where: { ...queryParams },
+      offset: page * 8,
+      limit: 8,
+      order: orderParams.order && [
+        [orderParams.order, orderParams.orderDirection],
+      ],
     });
-    res.json(books);
+    console.log(page)
+    res.json({ books: books.rows, total: books.count });
   } catch (err) {
     res.status(401).json({ err });
+  }
+};
+
+const getBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const selectedBook = await db.book.findOne({
+      include: [{ model: db.category, attributes: ["value"] }],
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "userId"],
+      },
+      where: { id: +id },
+    });
+    res.json(selectedBook);
+  } catch (error) {
+    res.json(error);
   }
 };
 
@@ -50,7 +92,7 @@ const addReview = async (req, res) => {
     const text = req.body.text;
     const bookId = +req.body.bookId;
     const userId = +req.body.userId;
-    const addBookReview = db.review.create({ text, bookId, userId });
+    const addBookReview = await db.review.create({ text, bookId, userId });
     res.json({ messsage: "success added review" });
   } catch (error) {
     res.json({ messsage: error });
@@ -111,9 +153,7 @@ const addRating = async (req, res) => {
     const ratingUser = await db.rating.findOne({ where: { bookId, userId } });
     if (ratingUser) {
       const updatedUser = await ratingUser.update({
-        value: ratingValue,
-        bookId,
-        userId,
+        value: ratingValue
       });
     } else {
       const createRating = await db.rating.create({
@@ -166,6 +206,8 @@ const getCategory = async (req, res) => {
     const userCategories = await db.category.findAll({
       attributes: ["value", "id"],
     });
+    
+    console.log( await db.category.findAll())
     res.json(userCategories);
   } catch (error) {
     res.json(error);
@@ -180,7 +222,7 @@ const editBook = async (req, res) => {
     const price = req.body.price;
     const description = req.body.description;
     const editedBook = await db.book.findOne({
-      where: { id:bookId, creator: userId },
+      where: { id: bookId, creator: userId },
     });
     return await editedBook.update({ snippet, price, description });
   } catch (error) {
@@ -191,6 +233,7 @@ const editBook = async (req, res) => {
 module.exports = {
   addBook,
   getBooks,
+  getBook,
   addReview,
   getReview,
   addFavourites,
@@ -199,5 +242,5 @@ module.exports = {
   getRating,
   addCategory,
   getCategory,
-  editBook
+  editBook,
 };
