@@ -6,8 +6,12 @@ const { checkUsers } = require("../validation/user");
 
 const userRouter = express.Router();
 
-// userRouter.get("/", useToken.authenticateToken, userController.getUsers);
-userRouter.get("/", useToken.authenticateToken, userController.getProfile);
+userRouter.get("/", useToken.authenticateToken, userController.getUsers);
+userRouter.get(
+  "/get-profile",
+  useToken.authenticateToken,
+  userController.getProfile
+);
 userRouter.post("/registration", checkUsers, userController.registerUser);
 userRouter.post("/login", userController.loginUser);
 userRouter.delete("/", useToken.authenticateToken, userController.deleteUser);

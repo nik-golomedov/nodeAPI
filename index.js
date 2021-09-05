@@ -5,6 +5,10 @@ const cors = require("cors");
 
 const userRouter = require("./routes/user");
 const bookRouter = require("./routes/book");
+const categoryRouter = require("./routes/category");
+const favouritesRouter = require("./routes/favourites");
+const ratingRouter = require("./routes/rating");
+const reviewRouter = require("./routes/review");
 
 const PORT = 8000;
 const app = express();
@@ -33,7 +37,7 @@ try {
 
 app.use("/users", userRouter);
 app.use(
-  "/users/books",
+  "/books",
   upload.single("image"),
   (req, res, next) => {
     req.body.header = addedString + req.body.header;
@@ -42,3 +46,7 @@ app.use(
 
   bookRouter
 );
+app.use("/favourites", favouritesRouter);
+app.use("/rating", ratingRouter);
+app.use("/rating", reviewRouter);
+app.use("/category", categoryRouter);
