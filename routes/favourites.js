@@ -1,6 +1,6 @@
 const express = require("express");
 
-const favouritesController = require("../controllers/favouritesControlle");
+const favouritesController = require("../controllers/favouritesController");
 const useToken = require("../middleware/isAuth");
 
 const favouritesRouter = express.Router();
@@ -16,3 +16,11 @@ favouritesRouter.get(
   useToken.authenticateToken,
   favouritesController.getFavourites
 );
+
+favouritesRouter.delete(
+  "/:id",
+  useToken.authenticateToken,
+  favouritesController.deleteFavourites
+);
+
+module.exports = favouritesRouter

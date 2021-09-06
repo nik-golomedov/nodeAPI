@@ -14,9 +14,9 @@ exports.checkBooks = [
     .notEmpty()
     .withMessage("Author must be not empty")
     .bail(),
-    check("categoryId")
+    check("category")
     .notEmpty()
-    .withMessage("categoryId must be not empty")
+    .withMessage("category must be not empty")
     .bail(),
   (req, res, next) => {
     const errors = validationResult(req);

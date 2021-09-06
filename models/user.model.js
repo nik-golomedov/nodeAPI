@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
       })
       User.hasMany(models.review)
       User.hasOne(models.rating)
-      User.hasMany(models.category)
     }
     
   }

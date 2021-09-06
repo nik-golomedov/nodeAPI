@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
       },
       price: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       rating: {
@@ -41,7 +41,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      creator: {
+      creatorId: {
         type: Sequelize.INTEGER,
         aloowNull:false,
         references: {

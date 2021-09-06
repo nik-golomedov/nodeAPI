@@ -12,3 +12,5 @@ ratingRouter.post(
   checkRating,
   ratingController.addRating
 );
+
+module.exports = ratingRouter

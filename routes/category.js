@@ -13,3 +13,5 @@ categoriesRouter.post(
   categoriesController.addCategory
 );
 categoriesRouter.get("/", categoriesController.getCategories);
+
+module.exports = categoriesRouter;

@@ -3,14 +3,10 @@ const db = require("../models");
 const addFavourite = async (req, res) => {
   try {
     const { bookId } = req.body;
-    const existBook = await db.favourites.findOne({
-      where: { userId: req.user.id, bookId: +bookId },
+    const newFavouriteBook = await db.favourites.create({
+      userId: req.user.id,
+      bookId: +bookId,
     });
-    if (existBook !== null) {
-      await existBook.destroy();
-      return res.status(200).json({ message: "Successfull removed" });
-    }
-    const newFavouriteBook = await db.favourites.create({ userId, bookId });
     res.status(200).json({ message: "Successfull added" });
   } catch (error) {
     res.status(500).json({ messsage: error });
@@ -29,4 +25,17 @@ const getFavourites = async (req, res) => {
   }
 };
 
-module.exports = { addFavourite, getFavourites };
+const deleteFavourites = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existBook = await db.favourites.findOne({
+      where: { userId: req.user.id, bookId: +id },
+    });
+    await existBook.destroy();
+    res.status(200).json({ message: "Successfull removed" });
+  } catch (error) {
+    res.status(500).json({ messsage: error });
+  }
+};
+
+module.exports = { addFavourite, getFavourites, deleteFavourites };

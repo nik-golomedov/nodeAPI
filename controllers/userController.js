@@ -107,6 +107,7 @@ const updateUser = async (req, res) => {
 
 module.exports = {
   registerUser,
+  getUsers,
   getProfile,
   loginUser,
   deleteUser,

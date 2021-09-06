@@ -40,13 +40,12 @@ app.use(
   "/books",
   upload.single("image"),
   (req, res, next) => {
-    req.body.header = addedString + req.body.header;
+    req.body.header && (req.body.header = addedString + req.body.header);
     next();
   },
-
   bookRouter
 );
 app.use("/favourites", favouritesRouter);
 app.use("/rating", ratingRouter);
-app.use("/rating", reviewRouter);
+app.use("/review", reviewRouter);
 app.use("/category", categoryRouter);

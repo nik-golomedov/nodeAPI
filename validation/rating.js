@@ -1,7 +1,7 @@
 const { check, validationResult } = require("express-validator");
 
 exports.checkRating = [
-  check("rating")
+  check("value")
     .notEmpty()
     .isInt({ min: 0, max: 5 })
     .withMessage("Invalid rating")
