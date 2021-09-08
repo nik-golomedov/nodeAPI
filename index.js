@@ -12,7 +12,31 @@ const reviewRouter = require("./routes/review");
 
 const PORT = 8000;
 const app = express();
+const httpServer = require("http").createServer(app);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+const events = require("events");
 
+io.on("connection", function (socket) {
+  socket.on("hello", (arg) => {
+    console.log(arg);
+  });
+  console.log("Someone has connected");
+  const eventEmitter = new events.EventEmitter();
+  eventEmitter.on("newEvent", (msg) => {
+    socket.broadcast.emit("bookAdded", msg);
+  });
+
+  exports.emitter = eventEmitter;
+});
+
+httpServer.listen(7000, () => {
+  console.log("Server io run");
+});
 let addedString = randomstring.generate();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

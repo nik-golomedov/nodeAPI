@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
+
 const db = require("../models");
+const app = require("../index");
 
 const addBook = async (req, res) => {
   try {
@@ -22,6 +24,7 @@ const addBook = async (req, res) => {
       creatorId,
       categoryId: category,
     });
+    if (app.emitter) app.emitter.emit("newEvent", "New Book!");
     res.status(200).json({ message: "Book successfull added" });
   } catch (error) {
     res.status(500).json(error);
@@ -43,7 +46,8 @@ const getBooks = async (req, res) => {
     }
     if (req.query.rating) queryParams.rating = { [Op.gte]: req.query.rating };
     if (req.query.price) {
-      queryParams.price = { [Op.between]: req.query.price };
+      const correctPrice = req.query.price.split(",");
+      queryParams.price = { [Op.between]: correctPrice };
     }
     if (req.query.category) queryParams.categoryId = +req.query.category;
     if (req.query.page) page = req.query.page;
@@ -54,7 +58,7 @@ const getBooks = async (req, res) => {
           attributes: ["value"],
         },
       ],
-      
+
       attributes: {
         exclude: ["createdAt", "updatedAt", "userId"],
       },
@@ -65,6 +69,7 @@ const getBooks = async (req, res) => {
         [orderParams.order, orderParams.orderDirection],
       ],
     });
+
     res.status(200).json({ books: books.rows, total: books.count });
   } catch (err) {
     res.status(500).json({ err });
