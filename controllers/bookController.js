@@ -56,6 +56,7 @@ const getBooks = async (req, res) => {
         {
           model: db.category,
           attributes: ["value"],
+          required: true,
         },
       ],
 
@@ -65,11 +66,10 @@ const getBooks = async (req, res) => {
       where: { ...queryParams },
       offset: page * 8,
       limit: 8,
-      order: orderParams.order && [
-        [orderParams.order, orderParams.orderDirection],
-      ],
+      order: orderParams.order
+        ? [[orderParams.order, orderParams.orderDirection]]
+        : [["createdAt", "ASC"]],
     });
-
     res.status(200).json({ books: books.rows, total: books.count });
   } catch (err) {
     res.status(500).json({ err });
