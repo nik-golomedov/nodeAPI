@@ -4,13 +4,12 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       User.belongsToMany(models.book, {
-        through:"favourites",
-        foreignKey: "userId"
-      })
-      User.hasMany(models.review)
-      User.hasOne(models.rating)
+        through: "favourites",
+        foreignKey: "userId",
+      });
+      User.hasMany(models.review);
+      User.hasOne(models.rating);
     }
-    
   }
   User.init(
     {
@@ -42,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "user",
-      freezeTableName:true
+      freezeTableName: true,
     }
   );
 

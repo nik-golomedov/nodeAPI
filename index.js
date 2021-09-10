@@ -19,22 +19,33 @@ const io = require("socket.io")(httpServer, {
     methods: ["GET", "POST"],
   },
 });
+
 const events = require("events");
 
-io.on("connection", function (socket) {
-  socket.on("hello", (arg) => {
-    console.log(arg);
+io.on("connection", (socket) => {
+  socket.on("checkUser", (arg) => {
+    socket.join("room");
   });
+  socket.join("room");
   console.log("Someone has connected");
   const eventEmitter = new events.EventEmitter();
   eventEmitter.on("newEvent", (msg) => {
-    socket.broadcast.emit("bookAdded", msg);
+    io.in("room").emit("bookAdded", msg);
+  });
+  const room = io.sockets.adapter.rooms["room"];
+  socket.on("disconnecting", () => {
+    console.log(socket.rooms.length);
+    socket.leave("room");
   });
 
+  socket.on("disconnect", () => {
+    socket.leave("room");
+  });
+  console.log(io.sockets.adapter.rooms);
   exports.emitter = eventEmitter;
 });
 
-httpServer.listen(7000, () => {
+io.listen(httpServer, () => {
   console.log("Server io run");
 });
 let addedString = randomstring.generate();
@@ -54,7 +65,7 @@ app.use(express.json());
 app.use(express.static("uploads"));
 
 try {
-  app.listen(PORT);
+  httpServer.listen(PORT);
 } catch (error) {
   console.log(error);
 }

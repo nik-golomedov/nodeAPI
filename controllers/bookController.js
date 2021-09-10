@@ -24,7 +24,7 @@ const addBook = async (req, res) => {
       creatorId,
       categoryId: category,
     });
-    if (app.emitter) app.emitter.emit("newEvent", "New Book!");
+    if (app.emitter) app.emitter.emit("newEvent", newBook);
     res.status(200).json({ message: "Book successfull added" });
   } catch (error) {
     res.status(500).json(error);
@@ -59,7 +59,6 @@ const getBooks = async (req, res) => {
           required: true,
         },
       ],
-
       attributes: {
         exclude: ["createdAt", "updatedAt", "userId"],
       },
@@ -91,6 +90,7 @@ const getBook = async (req, res) => {
       },
       where: { id: +id },
     });
+    if (app.emitter) app.emitter.emit("newEvent", selectedBook);
     res.status(200).json(selectedBook);
   } catch (error) {
     res.status(500).json(error);
