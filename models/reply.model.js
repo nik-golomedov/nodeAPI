@@ -1,28 +1,33 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Review extends Model {
+  class Reply extends Model {
     static associate(models) {
-      Review.belongsTo(models.book);
-      Review.belongsTo(models.user);
-      Review.hasMany(models.reply);
+      Reply.belongsTo(models.review);
+      Reply.belongsTo(models.user);
     }
   }
-  Review.init(
+  Reply.init(
     {
       text: DataTypes.TEXT,
+
+      userId: {
+        type: DataTypes.INTEGER,
+      },
+      reviewId: DataTypes.INTEGER,
       bookId: {
         type: DataTypes.INTEGER,
       },
-      userId: {
+      targetUserId: {
         type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {
       sequelize,
-      modelName: "review",
+      modelName: "reply",
       freezeTableName: true,
     }
   );
-  return Review;
+  return Reply;
 };

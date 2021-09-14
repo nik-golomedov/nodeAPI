@@ -1,4 +1,6 @@
+const { sequelize } = require("../models");
 const db = require("../models");
+const socket = require("../socket");
 
 const addReview = async (req, res) => {
   try {
@@ -19,13 +21,21 @@ const getReview = async (req, res) => {
     const bookId = +req.params.id;
     const review = await db.review.findAll({
       where: { bookId },
-      include: {
-        model: db.user,
-        attributes: {
-          exclude: ["password"],
+      include: [
+        {
+          model: db.user,
+          attributes: {
+            exclude: ["password"],
+          },
         },
-      },
+        {
+          model: db.reply,
+          include: [{ model: db.user, attributes: { exclude: ["password"] } }],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
     });
+
     res.status(200).json(review);
   } catch (error) {
     res.status(500).json({ message: error });

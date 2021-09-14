@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 
 const db = require("../models");
-const app = require("../index");
+const socket = require("../socket");
 
 const addBook = async (req, res) => {
   try {
@@ -24,7 +24,9 @@ const addBook = async (req, res) => {
       creatorId,
       categoryId: category,
     });
-    if (app.emitter) app.emitter.emit("newEvent", newBook);
+    const io = socket.getInstance();
+
+    io.emit("bookAdded", newBook);
     res.status(200).json({ message: "Book successfull added" });
   } catch (error) {
     res.status(500).json(error);
@@ -90,7 +92,7 @@ const getBook = async (req, res) => {
       },
       where: { id: +id },
     });
-    if (app.emitter) app.emitter.emit("newEvent", selectedBook);
+
     res.status(200).json(selectedBook);
   } catch (error) {
     res.status(500).json(error);
