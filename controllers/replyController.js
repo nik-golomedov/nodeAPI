@@ -3,7 +3,12 @@ const socket = require("../socket");
 
 const addReply = async (req, res) => {
   try {
-    const { text, reviewId, targetUserId, bookId } = req.body;
+    const {
+      text,
+      reviewId,
+      targetUserId,
+      bookId,
+    } = req.body;
     const newReply = await db.reply.create({
       text,
       reviewId: +reviewId,

@@ -8,7 +8,8 @@ exports.checkUsers = [
     .matches(correctName)
     .withMessage("Invalid Firstname and Lastname")
     .bail(),
-  check("email").notEmpty().isEmail().withMessage("Invalid email").bail(),
+  check("email").notEmpty().isEmail().withMessage("Invalid email")
+    .bail(),
   check("password")
     .notEmpty()
     .isLength({ min: 6 })
@@ -21,8 +22,9 @@ exports.checkUsers = [
     .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
       return res.status(401).json({ errors: errors.array() });
+    }
     next();
   },
 ];

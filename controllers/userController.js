@@ -8,18 +8,21 @@ dotenv.config();
 
 const registerUser = async (req, res) => {
   try {
-    const fullName = req.body.fullName;
-    const email = req.body.email;
-    const dob = req.body.dob;
+    const { fullName, email, dob } = req.body;
     const password = CryptoJS.AES.encrypt(
       req.body.password,
-      process.env.SECRET_KEY
+      process.env.SECRET_KEY,
     ).toString();
     const user = await db.user.findOne({ where: { email } });
     if (user !== null) {
       return res.json({ message: "User already exist" });
     }
-    const newUser = db.user.create({ fullName, email, password, dob });
+    await db.user.create({
+      fullName,
+      email,
+      password,
+      dob,
+    });
     res.status(200).json({ message: "Registration success" });
   } catch (error) {
     res.status(500).json(error);
@@ -49,8 +52,8 @@ const getProfile = (req, res) => {
 const loginUser = async (req, res) => {
   try {
     if (!req.body) return res.status(400).json();
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email } = req.body;
+    const { password } = req.body;
     const user = await db.user.findOne({ where: { email } });
     if (!user) {
       return res
@@ -62,7 +65,7 @@ const loginUser = async (req, res) => {
 
     if (email === user.email && password === originalPassword) {
       const token = tokenUsage.generateAccessToken(user.id);
-      return res.json({ token: token });
+      return res.json({ token });
     }
     return res
       .status(200)
@@ -74,8 +77,8 @@ const loginUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const user = await db.user.destroy({ where: { id: req.user.id } });
-    res.status(200).json({ message: `Delete success` });
+    await db.user.destroy({ where: { id: req.user.id } });
+    res.status(200).json({ message: "Delete success" });
   } catch (error) {
     res.status(400).json(error);
   }
@@ -83,14 +86,14 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const user = req.user;
+    const { user } = req;
     if (user) {
       user.fullName = req.body.fullName;
       user.email = req.body.email;
       user.dob = req.body.dob;
       user.password = CryptoJS.AES.encrypt(
         req.body.password,
-        process.env.SECRET_KEY
+        process.env.SECRET_KEY,
       ).toString();
       await user.update({
         fullName: user.fullName,

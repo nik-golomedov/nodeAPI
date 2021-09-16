@@ -8,19 +8,19 @@ const favouritesRouter = express.Router();
 favouritesRouter.post(
   "/",
   useToken.authenticateToken,
-  favouritesController.addFavourite
+  favouritesController.addFavourite,
 );
 
 favouritesRouter.get(
   "/",
   useToken.authenticateToken,
-  favouritesController.getFavourites
+  favouritesController.getFavourites,
 );
 
 favouritesRouter.delete(
   "/:id",
   useToken.authenticateToken,
-  favouritesController.deleteFavourites
+  favouritesController.deleteFavourites,
 );
 
-module.exports = favouritesRouter
+module.exports = favouritesRouter;

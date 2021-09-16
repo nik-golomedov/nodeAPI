@@ -10,7 +10,7 @@ ratingRouter.post(
   "/",
   useToken.authenticateToken,
   checkRating,
-  ratingController.addRating
+  ratingController.addRating,
 );
 
-module.exports = ratingRouter
+module.exports = ratingRouter;

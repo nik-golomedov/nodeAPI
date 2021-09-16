@@ -3,7 +3,7 @@ const db = require("../models");
 const addFavourite = async (req, res) => {
   try {
     const { bookId } = req.body;
-    const newFavouriteBook = await db.favourites.create({
+    await db.favourites.create({
       userId: req.user.id,
       bookId: +bookId,
     });

@@ -1,11 +1,9 @@
-const { sequelize } = require("../models");
 const db = require("../models");
-const socket = require("../socket");
 
 const addReview = async (req, res) => {
   try {
     const { text, bookId } = req.body;
-    const newReview = await db.review.create({
+    await db.review.create({
       text,
       bookId: +bookId,
       userId: req.user.id,

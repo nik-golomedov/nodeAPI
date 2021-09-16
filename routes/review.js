@@ -8,4 +8,4 @@ const reviewRouter = express.Router();
 reviewRouter.post("/", useToken.authenticateToken, reviewController.addReview);
 reviewRouter.get("/:id", reviewController.getReview);
 
-module.exports = reviewRouter
+module.exports = reviewRouter;

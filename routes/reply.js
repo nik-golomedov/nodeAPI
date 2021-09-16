@@ -7,4 +7,4 @@ const replyRouter = express.Router();
 
 replyRouter.post("/", useToken.authenticateToken, replyController.addReply);
 
-module.exports = replyRouter
+module.exports = replyRouter;

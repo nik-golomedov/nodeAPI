@@ -10,7 +10,7 @@ categoriesRouter.post(
   "/",
   useToken.authenticateToken,
   checkCategory,
-  categoriesController.addCategory
+  categoriesController.addCategory,
 );
 categoriesRouter.get("/", categoriesController.getCategories);
 

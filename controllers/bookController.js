@@ -5,10 +5,17 @@ const socket = require("../socket");
 
 const addBook = async (req, res) => {
   try {
-    const { title, description, price, author, snippet, category, creatorId } =
-      req.body;
+    const {
+      title,
+      description,
+      price,
+      author,
+      snippet,
+      category,
+      creatorId,
+    } = req.body;
     const image = req.body.header
-      ? "http://localhost:8000/" + req.body.header
+      ? `http://localhost:8000/${req.body.header}`
       : "http://localhost:8000/placeholder.png";
     const book = await db.book.findOne({ where: { title } });
     if (book !== null) {
@@ -25,7 +32,6 @@ const addBook = async (req, res) => {
       categoryId: category,
     });
     const io = socket.getInstance();
-
     io.emit("bookAdded", newBook);
     res.status(200).json({ message: "Book successfull added" });
   } catch (error) {
@@ -42,9 +48,10 @@ const getBooks = async (req, res) => {
       queryParams.author = { [Op.substring]: req.query.author };
     }
     if (req.query.order) {
-      const order = req.query.order.split("_");
-      orderParams.order = order[0];
-      orderParams.orderDirection = order[1];
+      const orderReq = req.query.order.split("_");
+      const [order, orderDirection] = orderReq;
+      orderParams.order = order;
+      orderParams.orderDirection = orderDirection;
     }
     if (req.query.rating) queryParams.rating = { [Op.gte]: req.query.rating };
     if (req.query.price) {
@@ -101,9 +108,10 @@ const getBook = async (req, res) => {
 
 const editBook = async (req, res) => {
   try {
-    const { snippet, price, description, bookId } = req.body;
+    const { snippet, price, description } = req.body;
+    const { id } = req.params;
     const editedBook = await db.book.findOne({
-      where: { id: +bookId, creatorId: req.user.id },
+      where: { id: +id, creatorId: req.user.id },
     });
     await editedBook.update({ snippet, price, description });
     return res.status(200).json({ message: "Edit success" });

@@ -1,7 +1,7 @@
 const socketio = require("socket.io");
 
 let io = 0;
-let user = [];
+const user = [];
 
 module.exports = {
   initialize: (server) => {
@@ -13,19 +13,14 @@ module.exports = {
     });
     io.on("connection", (socket) => {
       socket.on("checkUser", (data) => {
-        user.push({  id: data.id, socketId: socket.id });
+        user.push({ id: data.id, socketId: socket.id });
       });
 
-      console.log("New client connected with id = ", socket.id);
       socket.on("disconnect", () => {
-        user.filter(item=>item.socketId !== socket.id)
+        user.filter((item) => item.socketId !== socket.id);
       });
     });
   },
-  getInstance: () => {
-    return io;
-  },
-  getUser: () => {
-    return user;
-  },
+  getInstance: () => io,
+  getUser: () => user,
 };

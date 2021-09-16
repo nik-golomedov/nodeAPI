@@ -11,9 +11,9 @@ bookRouter.post(
   "/",
   useToken.authenticateToken,
   checkBooks,
-  bookController.addBook
+  bookController.addBook,
 );
-bookRouter.patch("/", useToken.authenticateToken, bookController.editBook);
+bookRouter.patch("/:id", useToken.authenticateToken, bookController.editBook);
 bookRouter.get("/:id", bookController.getBook);
 
 module.exports = bookRouter;

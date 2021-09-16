@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "book",
       freezeTableName: true,
-    }
+    },
   );
   return Book;
 };

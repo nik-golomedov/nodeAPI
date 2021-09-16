@@ -7,11 +7,11 @@ const addRating = async (req, res) => {
     const bookId = +req.body.bookId;
     const ratingUser = await db.rating.findOne({ where: { bookId, userId } });
     if (ratingUser) {
-      const updatedUser = await ratingUser.update({
+      await ratingUser.update({
         value: ratingValue,
       });
     } else {
-      const createRating = await db.rating.create({
+      await db.rating.create({
         value: ratingValue,
         userId,
         bookId,
@@ -22,9 +22,9 @@ const addRating = async (req, res) => {
       where: { bookId },
     });
     const avgRating = sumRating / amountRating;
-    const ratingBook = await db.book.update(
+    await db.book.update(
       { rating: avgRating },
-      { where: { id: bookId } }
+      { where: { id: bookId } },
     );
 
     res.status(200).json(amountRating);

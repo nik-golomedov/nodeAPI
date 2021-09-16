@@ -10,7 +10,7 @@ userRouter.get("/", useToken.authenticateToken, userController.getUsers);
 userRouter.get(
   "/get-profile",
   useToken.authenticateToken,
-  userController.getProfile
+  userController.getProfile,
 );
 userRouter.post("/registration", checkUsers, userController.registerUser);
 userRouter.post("/login", userController.loginUser);
@@ -19,7 +19,7 @@ userRouter.put(
   "/",
   useToken.authenticateToken,
   checkUsers,
-  userController.updateUser
+  userController.updateUser,
 );
 
 module.exports = userRouter;
