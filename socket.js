@@ -15,7 +15,6 @@ module.exports = {
       socket.on("checkUser", (data) => {
         user.push({ id: data.id, socketId: socket.id });
       });
-
       socket.on("disconnect", () => {
         user.filter((item) => item.socketId !== socket.id);
       });

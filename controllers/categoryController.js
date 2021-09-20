@@ -11,7 +11,7 @@ const addCategory = async (req, res) => {
     const newCategory = await db.category.create({ value: req.body.category });
     res.status(200).json(newCategory);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error });
   }
 };
 

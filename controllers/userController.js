@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
     ).toString();
     const user = await db.user.findOne({ where: { email } });
     if (user !== null) {
-      return res.json({ message: "User already exist" });
+      return res.status(409).json({ message: "User already exist" });
     }
     await db.user.create({
       fullName,
@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
       return res.json({ token });
     }
     return res
-      .status(200)
+      .status(400)
       .json({ message: "Enter correct email and/or password" });
   } catch (error) {
     res.status(400).json(error);

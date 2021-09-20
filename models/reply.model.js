@@ -1,5 +1,5 @@
-"use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Reply extends Model {
     static associate(models) {
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "reply",
       freezeTableName: true,
-    }
+    },
   );
   return Reply;
 };
