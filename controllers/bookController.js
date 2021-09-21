@@ -1,22 +1,13 @@
 const { Op } = require("sequelize");
 
 const db = require("../models");
-const socket = require("../socket");
+const socket = require("../services/socket");
 
 const addBook = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      author,
-      snippet,
-      category,
-      creatorId,
-    } = req.body;
-    const image = req.body.header
-      ? `http://localhost:8000/${req.body.header}`
-      : "http://localhost:8000/placeholder.png";
+    const { title, description, price, author, snippet, category, creatorId } =
+      req.body;
+    const image = req.body.header ? `${req.body.header}` : "placeholder.png";
     const book = await db.book.findOne({ where: { title } });
     if (book !== null) {
       return res.status(409).json({ message: "Book already exist" });
@@ -32,8 +23,17 @@ const addBook = async (req, res) => {
       categoryId: category,
     });
     const io = socket.getInstance();
-    io.emit("bookAdded", newBook);
-    res.status(200).json({ message: "Book successfull added" });
+    if (io) {
+      const bookNotification = await db.notification.create({
+        userId: req.user.id,
+        message: "Добавлена новая книга",
+        type: "addBook",
+        bookId: newBook.id,
+      });
+      io.emit("bookAdded", bookNotification);
+    }
+
+    res.status(200).json({ message: "Book successful added" });
   } catch (error) {
     res.status(500).json(error);
   }

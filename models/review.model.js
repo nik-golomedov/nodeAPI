@@ -5,12 +5,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Review.belongsTo(models.book);
       Review.belongsTo(models.user);
-      Review.hasMany(models.reply);
+      Review.hasMany(models.review);
     }
   }
   Review.init(
     {
       text: DataTypes.TEXT,
+      targetUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       bookId: {
         type: DataTypes.INTEGER,
       },

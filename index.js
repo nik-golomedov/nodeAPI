@@ -11,11 +11,11 @@ const categoryRouter = require("./routes/category");
 const favouritesRouter = require("./routes/favourites");
 const ratingRouter = require("./routes/rating");
 const reviewRouter = require("./routes/review");
-const replyRouter = require("./routes/reply");
+const notificationRouter = require("./routes/notification");
 
 const PORT = 8000;
 
-require("./socket").initialize(httpServer);
+require("./services/socket").initialize(httpServer);
 
 const addedString = randomstring.generate();
 const storage = multer.diskStorage({
@@ -49,5 +49,5 @@ app.use(
 app.use("/favourites", favouritesRouter);
 app.use("/rating", ratingRouter);
 app.use("/review", reviewRouter);
-app.use("/reply", replyRouter);
 app.use("/category", categoryRouter);
+app.use("/notification", notificationRouter);

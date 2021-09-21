@@ -18,6 +18,18 @@ module.exports = {
           as: "user",
         },
       },
+      reviewId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "review",
+          key: "id",
+          as: "review",
+        },
+      },
+      targetUserId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       bookId: {
         type: Sequelize.INTEGER,
         references: {

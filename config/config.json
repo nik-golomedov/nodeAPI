@@ -15,7 +15,7 @@
   },
   "production": {
     "username": "fusion_intern",
-    "password": "git fusion",
+    "password": "fusion",
     "database": "usersdb",
     "host": "localhost",
     "dialect": "postgres"

@@ -1,19 +1,11 @@
-"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("reply", {
+    await queryInterface.createTable("notification", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-      },
-      text: {
-        type: Sequelize.TEXT,
-      },
-      targetUserId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
       },
       bookId: {
         type: Sequelize.INTEGER,
@@ -21,20 +13,10 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "user",
-          key: "id",
-          as: "user",
-        },
+        allowNull: false,
       },
-      reviewId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "review",
-          key: "id",
-          as: "review",
-        },
-      },
+      message: Sequelize.STRING,
+      type: Sequelize.STRING,
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -46,6 +28,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("reply");
+    await queryInterface.dropTable("notification");
   },
 };

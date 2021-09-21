@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
       User.hasMany(models.review);
-      User.hasMany(models.reply);
       User.hasOne(models.rating);
     }
   }
@@ -43,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "user",
       freezeTableName: true,
-    }
+    },
   );
 
   return User;
