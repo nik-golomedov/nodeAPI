@@ -8,7 +8,7 @@ const notificationRouter = express.Router();
 notificationRouter.get(
   "/",
   useToken.authenticateToken,
-  notificationController.getNotification,
+  notificationController.getNotifications,
 );
 
 notificationRouter.delete(

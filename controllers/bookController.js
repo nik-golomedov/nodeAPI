@@ -72,8 +72,8 @@ const getBooks = async (req, res) => {
         exclude: ["createdAt", "updatedAt", "userId"],
       },
       where: { ...queryParams },
-      offset: page * 8,
-      limit: 8,
+      offset: req.query.offset ? page * req.query.offset : page * 8,
+      limit: req.query.limit ? req.query.limit : 8,
       order: orderParams.order
         ? [[orderParams.order, orderParams.orderDirection]]
         : [["createdAt", "ASC"]],

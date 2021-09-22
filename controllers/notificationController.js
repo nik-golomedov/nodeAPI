@@ -1,11 +1,11 @@
 const db = require("../models");
 
-const getNotification = async (req, res) => {
+const getNotifications = async (req, res) => {
   try {
-    const notificationList = await db.notification.findAll({
+    const notificationsList = await db.notification.findAll({
       where: { userId: req.user.id },
     });
-    res.status(200).json(notificationList);
+    res.status(200).json(notificationsList);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -22,4 +22,4 @@ const deleteNotification = async (req, res) => {
   }
 };
 
-module.exports = { getNotification, deleteNotification };
+module.exports = { getNotifications, deleteNotification };
